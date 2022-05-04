@@ -1,5 +1,6 @@
 const express = require('express');
-const stations = require('../../models/stations');
+const busstations = require('../../models/busstations');
+const metrostations = require('../../models/metrostation')
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -10,13 +11,15 @@ router.get('/', (req, res) => {
     )
   })
 
-router.post("/add",async(req,res)=>{
-const {title, related_bus,lat,long}=req.body;
-const station = new stations({
+router.post("/addbs",async(req,res)=>{
+const {title,route, company,related_bus,lat,long}=req.body;
+const station = new busstations({
     title:title,
-related_bus:related_bus,
-lat: lat,
-long: long
+    route:route,
+    company:company,
+    related_bus:related_bus,
+    lat: lat,
+    long: long
   })
   station.save().then((item)=>{
     res.send('success');
@@ -26,9 +29,9 @@ return res.status(200).json({
 });
 
 })
-router.get("/data",async(req,res)=>{
+router.get("/bs",async(req,res)=>{
     try{
-        const dataitem = await stations.find({});
+        const dataitem = await busstations.find({});
 
         res.status(200).json({
         data:dataitem
@@ -37,5 +40,38 @@ router.get("/data",async(req,res)=>{
         console.log(error);
     }
 })
+
+
+router.post("/addms",async(req,res)=>{
+  const {title,route, company,related_bus,lat,long}=req.body;
+  const station = new metrostations({
+      title:title,
+      route:route,
+      company:company,
+      related_bus:related_bus,
+      lat: lat,
+      long: long
+    })
+    station.save().then((item)=>{
+      res.send('success');
+    }).catch(err => console.log(err))
+  return res.status(200).json({
+      data:station,
+  });
+  
+  })
+  router.get("/ms",async(req,res)=>{
+      try{
+          const dataitem = await metrostations.find({});
+  
+          res.status(200).json({
+          data:dataitem
+          });
+      }catch (error){
+          console.log(error);
+      }
+  })
+  
+
 
 module.exports = router;
